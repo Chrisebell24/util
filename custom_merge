@@ -1,0 +1,65 @@
+import numpy as np
+import pandas as pd
+
+def merge_range(left, right, left_val, right_low, right_high):
+    '''
+    Parameters
+    ----------
+    left : pandas dataframe
+        Left DataFrame that you are joining onto
+    right : pandas dataframe
+        Right DataFrame that has the ranged values
+    left_val : list
+        list of columns from left that contains numeric values
+    right_low : list
+        list of columns that you are matching to left_val
+    right_high : list
+        list of columns that you are matching to left_val
+
+    Returns
+    -------
+    Pandas dataframe
+
+    Example
+    -------
+    import numpy as np
+
+    np.random.seed(69)
+    df1, df2 = pd.DataFrame(), pd.DataFrame()
+    df1['LETTERS'] = ['a', 'b','c','d','e','f', 'g']
+    df1['RAND'] = np.random.randint(1,len(df1)*10, len(df1))
+    df2['COLOR'] = ['red', 'orange','yellow','green','blue','purple','brown']
+    df2['LOW'] = [i*10 for i in range(0, len(df2))]
+    df2['HIGH'] = [i*10 for i in range(1, 1+len(df2))]
+
+    merge_range(df1, df2, left_val=['RAND'], right_low=['LOW'], right_high=['HIGH'])
+    
+        LETTERS	RAND	COLOR	LOW	HIGH
+    0	a	    55	    purple	50	60
+    1	b	    56	    purple	50	60
+    2	c	    21	    yellow	20	30
+    3	d	    50	    purple	50	60
+    4	e	    23	    yellow	20	30
+    5	f	    10	    orange	10	20
+    6	g	    57	    purple	50	60
+    '''
+    true_args = True
+
+    for lv, rl, rh in zip(left_val, right_low, right_high):
+        a = left[lv].values
+        bl = right[rl].values
+        bh = right[rh].values
+
+        true_args *= (a[:, None] >= bl) & (a[:, None] < bh)
+
+    i, j = np.where(true_args)
+
+    df = pd.DataFrame(
+        np.column_stack([left.values[i], right.values[j]]),
+        columns=left.columns.append(right.columns)
+    )
+
+    if len(df.columns) - len(set(df.columns)) > 0:
+        print('Duplicate columns')
+
+    return df
