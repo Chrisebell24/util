@@ -15,20 +15,16 @@ def get_all_files(root, filetype=None):
 
     Example
     -------
-    file_list = []
-    glob_files('/FEStrategy/Hanweck_HDF5')
-    print(file_list[0:2])
-
-    ['/FEStrategy/Hanweck_HDF5/2017/12/07/AMZN.h5', '/FEStrategy/Hanweck_HDF5/2017/12/07/FB.h5']
+    files = get_all_files('/')
     '''
-    glob_files(root)
+    _glob_files(root)
 
     if filetype is not None:
         file_list = [f for f in file_list if filetype in f]
 
     return file_list
 
-def glob_files(root):
+def _glob_files(root):
     '''
     Parameters
     ----------
@@ -38,10 +34,6 @@ def glob_files(root):
     Returns
     -------
     Nothing but has global variable file_list
-
-    Example
-    -------
-    glob_files('/FEStrategy/')
     '''
     global file_list
     files = glob.glob(root + '*')
@@ -55,4 +47,4 @@ def glob_files(root):
 
     else:
         for f in files:
-            glob_files(f + '/')
+            _glob_files(f + '/')
