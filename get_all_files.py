@@ -15,14 +15,17 @@ def get_all_files(root, filetype=None):
 
     Example
     -------
-    files = get_all_files('/')
+    get_all_files('/')
+
     '''
+    global file_list
+    file_list = []
     _glob_files(root)
 
     if filetype is not None:
         file_list = [f for f in file_list if filetype in f]
 
-    return file_list
+    return list(set(file_list))
 
 def _glob_files(root):
     '''
@@ -34,6 +37,10 @@ def _glob_files(root):
     Returns
     -------
     Nothing but has global variable file_list
+
+    Example
+    -------
+    _glob_files('/')
     '''
     global file_list
     files = glob.glob(root + '*')
